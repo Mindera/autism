@@ -12,8 +12,8 @@ public class SlowdownRenderTest extends ControllerTest {
 
     @Test
     public void canRenderPageWhenModulesSlowdown() {
-        expect().body(containsString("SLOW")).when().get("/module/slowdown");
         expect().body(not(containsString("SLOW"))).when().get("/slowdown");
+        expect().body(containsString("SLOW")).when().get("/module/slowdown");
     }
 
 
