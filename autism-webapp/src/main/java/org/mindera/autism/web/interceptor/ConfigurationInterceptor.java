@@ -40,7 +40,6 @@ public class ConfigurationInterceptor implements HandlerInterceptor {
         String path = httpServletRequest.getRequestURI();
         requestContext.setSiteConfiguration(siteConfiguration);
 
-        requestContext.setCurrentPage(siteConfiguration.getDefaultPage());
         requestContext.setCurrentPage(siteConfiguration.getSitemap().get(path));
 
         Page currentPage = requestContext.getCurrentPage();

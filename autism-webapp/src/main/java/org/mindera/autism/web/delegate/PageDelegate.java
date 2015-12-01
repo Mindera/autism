@@ -82,7 +82,7 @@ public class PageDelegate {
             Thread.sleep(executionIncrement);
             time += executionIncrement;
 
-            moduleResponses = moduleResponses.stream().filter(mr -> !mr.getFuture().isDone()).collect(Collectors.toList());
+            moduleResponses = moduleResponses.stream().filter(mr -> mr.getResponse() == null).collect(Collectors.toList());
 
             if (moduleResponses.isEmpty()) {
                 done = true;
@@ -93,6 +93,7 @@ public class PageDelegate {
                 });
             }
         }
+
 
         return model;
     }
@@ -147,5 +148,4 @@ public class PageDelegate {
         }
         return new HttpEntity(body, headers);
     }
-
 }

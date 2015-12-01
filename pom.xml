@@ -58,9 +58,8 @@
             </snapshots>
         </repository>
         <repository>
-            <id>vendor-mindera</id>
-            <name>vendor-mindera</name>
-            <url>file://${project.basedir}/vendor</url>
+            <id>mindera-vendor</id>
+            <url>file:vendor</url>
         </repository>
     </repositories>
 
