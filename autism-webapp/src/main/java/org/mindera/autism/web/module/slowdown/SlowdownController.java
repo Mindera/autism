@@ -21,7 +21,7 @@ public class SlowdownController extends SiteController {
         return new ApiResponse() {
             @Override
             public ResponseEntity<String> run() throws Exception {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
                 return getResponseEntity("SLOW");
             }
         };
