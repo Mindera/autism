@@ -148,12 +148,4 @@ public class PageDelegate {
         return new HttpEntity(body, headers);
     }
 
-    @VisibleForTesting
-    public void setMaxExecutionTime(int time) {
-        this.maxExecutionTime = time;
-    }
-    @VisibleForTesting
-    public void setExecutionIncrement(int time) {
-        this.executionIncrement = time;
-    }
 }
