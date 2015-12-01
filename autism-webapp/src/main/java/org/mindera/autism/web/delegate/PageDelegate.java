@@ -38,10 +38,10 @@ public class PageDelegate {
     @Value("${server.port}")
     private int port;
 
-    @Value("${modules.process.maxExecutionTime:500}")
+    @Value("${module.process.maxExecutionTime}")
     private int maxExecutionTime;
 
-    @Value("${modules.process.executionCheckIncrement:10}")
+    @Value("${module.process.executionCheckIncrement}")
     private int executionIncrement;
 
 
@@ -94,7 +94,6 @@ public class PageDelegate {
             }
         }
 
-        System.out.println("TIME---" + time);
         return model;
     }
 

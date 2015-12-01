@@ -35,8 +35,8 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
 //    @Resource
 //    BouncerInterceptor bouncerInterceptor;
 
-    @Value("${modules.request.pool.size:50}")
-    private int batchMaxPoolSize;
+    @Value("${module.request.pool.size}")
+    private Integer batchMaxPoolSize;
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(Bootstrap.class, args);
