@@ -70,6 +70,37 @@
             <artifactId>spring-boot-starter-freemarker</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>ma.glasnost.orika</groupId>
+            <artifactId>orika-core</artifactId>
+        </dependency>
+
+        <!-- Mindera Microservices Core -->
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>spring-boot-microservice-core</artifactId>
+        </dependency>
+
+        <!-- AMS Dependencies -->
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>ams-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>ams-client</artifactId>
+        </dependency>
+
+        <!-- UDB Dependencies -->
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>udb-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>udb-client</artifactId>
+        </dependency>
+
         <!-- Test Dependencies -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -82,6 +113,19 @@
             <artifactId>rest-assured</artifactId>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.seleniumhq.selenium</groupId>
+            <artifactId>selenium-java</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <scope>test</scope>
+        </dependency>
+
 
     </dependencies>
 

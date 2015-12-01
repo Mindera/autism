@@ -3,7 +3,7 @@
 <html lang="en">
 
 <body>
-Something went wrong: ${status} ${error}
+Something went wrong
 </body>
 
 </html>

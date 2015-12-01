@@ -1,0 +1,98 @@
+{
+  "modules": {
+    "user": {
+      "url": "/module/user"
+    },
+    "help": {
+      "url": "/module/help"
+    },
+    "credits": {
+      "url": "/module/credits"
+    },
+    "navigation": {
+      "url": "/module/navigation"
+    },
+    "login": {
+      "url": "/module/login"
+    },
+    "welcome": {
+      "url": "/module/welcome"
+    },
+    "slowdown": {
+      "url": "/module/slowdown"
+    }
+  },
+  "pages": {
+    "homepage": {
+      "layout": "layout/default.ftl",
+      "modules": {
+        "header": [
+          {
+            "module": "navigation",
+            "params": {
+              "type": "header"
+            }
+          },
+          {
+            "module": "user"
+          }
+        ],
+        "aside": [
+          {
+            "module": "help"
+          }
+        ],
+        "main": [
+          {
+            "module": "welcome"
+          }
+        ],
+        "footer": [
+          {
+            "module": "credits"
+          },
+          {
+            "module": "navigation",
+            "params": {
+              "type": "footer"
+            }
+          }
+        ]
+      }
+    },
+    "login": {
+      "layout": "layout/login.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "login"
+          }
+        ]
+      }
+    },
+    "slowdown": {
+      "layout": "layout/slowdown.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "slowdown"
+          }
+        ]
+      }
+    }
+  },
+  "defaultPage": {
+    "page": "homepage"
+  },
+  "sitemap": {
+    "/": {
+      "page": "homepage"
+    },
+    "/login": {
+      "page": "login"
+    },
+    "/slowdown": {
+      "page": "slowdown"
+    }
+  }
+}
