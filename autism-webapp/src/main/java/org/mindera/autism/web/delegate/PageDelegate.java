@@ -1,5 +1,6 @@
 package org.mindera.autism.web.delegate;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
 import org.mindera.autism.web.context.AutismRequestContext;
 import org.mindera.autism.web.domain.ModuleResponse;
@@ -37,10 +38,10 @@ public class PageDelegate {
     @Value("${server.port}")
     private int port;
 
-    @Value("${module.process.maxExecutionTime:500}")
+    @Value("${modules.process.maxExecutionTime:500}")
     private int maxExecutionTime;
 
-    @Value("${module.process.executionCheckIncrement:10}")
+    @Value("${modules.process.executionCheckIncrement:10}")
     private int executionIncrement;
 
 
@@ -145,5 +146,14 @@ public class PageDelegate {
             body.append(line);
         }
         return new HttpEntity(body, headers);
+    }
+
+    @VisibleForTesting
+    public void setMaxExecutionTime(int time) {
+        this.maxExecutionTime = time;
+    }
+    @VisibleForTesting
+    public void setExecutionIncrement(int time) {
+        this.executionIncrement = time;
     }
 }

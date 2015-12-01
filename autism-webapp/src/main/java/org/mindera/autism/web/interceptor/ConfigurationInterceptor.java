@@ -41,9 +41,7 @@ public class ConfigurationInterceptor implements HandlerInterceptor {
         requestContext.setSiteConfiguration(siteConfiguration);
 
         requestContext.setCurrentPage(siteConfiguration.getDefaultPage());
-        if (siteConfiguration.getSitemap().containsKey(path)) {
-            requestContext.setCurrentPage(siteConfiguration.getSitemap().get(path));
-        }
+        requestContext.setCurrentPage(siteConfiguration.getSitemap().get(path));
 
         Page currentPage = requestContext.getCurrentPage();
 
@@ -76,6 +74,7 @@ public class ConfigurationInterceptor implements HandlerInterceptor {
                     return module;
                 }).collect(Collectors.toList())
         );
+
 
         return true;
     }

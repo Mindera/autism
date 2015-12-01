@@ -1,7 +1,7 @@
 package org.mindera.autism.web.interceptor;
 
 import com.mindera.ams.context.AmsClientRequestContext;
-import org.mindera.autism.web.domain.mapping.UrlMappings;
+import org.mindera.autism.web.domain.mapping.UrlMapping;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -27,11 +27,12 @@ public class BouncerInterceptor implements HandlerInterceptor {
                              Object o) throws Exception {
 
         // check if there is a user authenticated on this request
-        if (amsContext.getUser() == null) {
-            String contextPath = context.getContextPath();
-            httpServletResponse.sendRedirect(contextPath + UrlMappings.LOGIN);
-            return false;
-        }
+
+//        if (amsContext.getUser() == null) {
+//            String contextPath = context.getContextPath();
+//            httpServletResponse.sendRedirect(contextPath + UrlMapping.LOGIN);
+//            return false;
+//        }
 
         return true;
     }

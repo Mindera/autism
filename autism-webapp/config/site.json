@@ -76,7 +76,15 @@
       "page": "homepage"
     },
     "/login": {
-      "page": "login"
+      "page": "login",
+      "layout": "layout/login.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "login"
+          }
+        ]
+      }
     }
   }
 }

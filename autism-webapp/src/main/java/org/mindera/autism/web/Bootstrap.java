@@ -2,7 +2,6 @@ package org.mindera.autism.web;
 
 import com.mindera.ams.interceptor.ConfigureAmsClientRequestContext;
 import freemarker.template.TemplateException;
-import org.mindera.autism.web.interceptor.BouncerInterceptor;
 import org.mindera.autism.web.interceptor.ConfigurationInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
@@ -33,10 +32,10 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
     @Resource
     ConfigurationInterceptor configurationInterceptor;
 
-    @Resource
-    BouncerInterceptor bouncerInterceptor;
+//    @Resource
+//    BouncerInterceptor bouncerInterceptor;
 
-    @Value("${module.request.pool.size:50}")
+    @Value("${modules.request.pool.size:50}")
     private int batchMaxPoolSize;
 
     public static void main(String[] args) throws Exception {
@@ -62,17 +61,17 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/module/**");
 
         // the bouncer redirect is available for every request except modules and /login
-        registry.addInterceptor(bouncerInterceptor)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/")
-                .excludePathPatterns("/module/**")
-                .excludePathPatterns("/login");
+//        registry.addInterceptor(bouncerInterceptor)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/")
+//                .excludePathPatterns("/module/**")
+//                .excludePathPatterns("/login");
     }
 
     @Bean
     public FreeMarkerConfigurer freemarkerConfig() throws IOException, TemplateException {
         FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
-        factory.setTemplateLoaderPaths("classpath:templates", "src/main/resource/templates");
+        factory.setTemplateLoaderPaths("classpath:templates", "classpath:modules");
         factory.setDefaultEncoding("UTF-8");
         FreeMarkerConfigurer result = new FreeMarkerConfigurer();
         result.setConfiguration(factory.createConfiguration());
