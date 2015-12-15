@@ -1,4 +1,3 @@
-<#include "../macros/global.ftl">
 <#include "common_header.ftl"/>
 
 <@layoutSection main />

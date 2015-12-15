@@ -44,6 +44,8 @@ public class ConfigurationInterceptor implements HandlerInterceptor {
 
         Page currentPage = requestContext.getCurrentPage();
 
+
+        // setup overrides defined at the path navigation level
         if (siteConfiguration.getPages().containsKey(requestContext.getCurrentPage().getPage())) {
             Page master = siteConfiguration.getPages().get(requestContext.getCurrentPage().getPage());
             if (currentPage.getLayout() == null) {
@@ -51,6 +53,23 @@ public class ConfigurationInterceptor implements HandlerInterceptor {
             }
             if (currentPage.getModules() == null) {
                 currentPage.setModules(master.getModules());
+            }
+            if (currentPage.getParent() == null) {
+                currentPage.setParent(master.getParent());
+            }
+        }
+
+        // setup overrides defined in the parent page
+        if (currentPage.getParent() != null) {
+            Page parentPage = siteConfiguration.getPages().get(currentPage.getParent());
+            parentPage.getModules().forEach((layoutSection, modules) -> {
+                if (currentPage.getModules().get(layoutSection) == null) {
+                    currentPage.getModules().put(layoutSection, modules);
+                }
+            });
+
+            if (currentPage.getLayout() == null) {
+                currentPage.setLayout(parentPage.getLayout());
             }
         }
 

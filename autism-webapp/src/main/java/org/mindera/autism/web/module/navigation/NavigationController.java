@@ -2,6 +2,8 @@ package org.mindera.autism.web.module.navigation;
 
 
 import com.mindera.microservice.controller.ApiResponse;
+import com.mindera.microservice.security.annotation.Authorize;
+import com.mindera.microservice.security.domain.Role;
 import org.mindera.autism.web.controller.SiteController;
 import org.mindera.autism.web.domain.mapping.ModuleUrlMapping;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping(ModuleUrlMapping.MODULE_NAVIGATION)
 public class NavigationController extends SiteController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
+    @Authorize(role = {Role.VISITOR})
     public ApiResponse module(final HttpServletRequest request) {
 
         return new ApiResponse() {

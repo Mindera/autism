@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @VisibleForTesting
 public class SlowdownController extends SiteController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
     public ApiResponse module() {
 
         return new ApiResponse() {

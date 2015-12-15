@@ -3,10 +3,13 @@
   <groupId>mindera</groupId>
   <artifactId>ams-domain</artifactId>
   <versioning>
-    <release>1.1.3</release>
+    <release>1.2.1</release>
     <versions>
-      <version>1.1.3</version>
+      <version>1.1.4-SNAPSHOT</version>
+      <version>1.2.0</version>
+      <version>1.2.1-SNAPSHOT</version>
+      <version>1.2.1</version>
     </versions>
-    <lastUpdated>20151121193435</lastUpdated>
+    <lastUpdated>20151214115053</lastUpdated>
   </versioning>
 </metadata>

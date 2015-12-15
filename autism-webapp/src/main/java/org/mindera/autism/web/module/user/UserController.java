@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping(ModuleUrlMapping.MODULE_USER)
 public class UserController extends SiteController {
 
-    @RequestMapping(method = RequestMethod.GET)
+    @RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})
     public ApiResponse module() {
 
         return new ApiResponse() {

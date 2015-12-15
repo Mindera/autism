@@ -18,12 +18,18 @@
     "welcome": {
       "url": "/module/welcome"
     },
+    "registration": {
+      "url": "/module/registration"
+    },
+    "patient": {
+      "url": "/module/patient"
+    },
     "slowdown": {
       "url": "/module/slowdown"
     }
   },
   "pages": {
-    "homepage": {
+    "base": {
       "layout": "layout/default.ftl",
       "modules": {
         "header": [
@@ -37,16 +43,8 @@
             "module": "user"
           }
         ],
-        "aside": [
-          {
-            "module": "help"
-          }
-        ],
-        "main": [
-          {
-            "module": "welcome"
-          }
-        ],
+        "main": [],
+        "aside": [],
         "footer": [
           {
             "module": "credits"
@@ -60,12 +58,53 @@
         ]
       }
     },
+    "homepage": {
+      "parent": "base",
+      "modules": {
+        "aside": [
+          {
+            "module": "help"
+          }
+        ],
+        "main": [
+          {
+            "module": "welcome"
+          }
+        ]
+      }
+    },
     "login": {
-      "layout": "layout/login.ftl",
+      "parent": "base",
+      "layout": "layout/wide.ftl",
       "modules": {
         "main": [
           {
             "module": "login"
+          }
+        ]
+      }
+    },
+    "registration": {
+      "parent": "base",
+      "layout": "layout/wide.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "registration"
+          }
+        ]
+      }
+    },
+    "create-patient": {
+      "parent": "base",
+      "layout": "layout/wide.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "patient",
+            "params": {
+              "action": "create"
+            }
           }
         ]
       }
@@ -90,6 +129,12 @@
     },
     "/login": {
       "page": "login"
+    },
+    "/registration": {
+      "page": "registration"
+    },
+    "/create-patient": {
+      "page": "create-patient"
     },
     "/slowdown": {
       "page": "slowdown"

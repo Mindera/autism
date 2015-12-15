@@ -1,11 +1,17 @@
 package org.mindera.autism.web;
 
+import com.google.common.cache.CacheBuilder;
 import com.mindera.ams.interceptor.ConfigureAmsClientRequestContext;
+import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
 import org.mindera.autism.web.interceptor.ConfigurationInterceptor;
+import org.mindera.autism.web.interceptor.RequestContextInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.guava.GuavaCache;
+import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
@@ -16,9 +22,12 @@ import org.springframework.ui.freemarker.FreeMarkerConfigurationFactory;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
+import org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 @EnableAsync
 @EnableAutoConfiguration
@@ -32,8 +41,8 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
     @Resource
     ConfigurationInterceptor configurationInterceptor;
 
-//    @Resource
-//    BouncerInterceptor bouncerInterceptor;
+    @Resource
+    RequestContextInterceptor bouncerInterceptor;
 
     @Value("${module.request.pool.size}")
     private Integer batchMaxPoolSize;
@@ -61,21 +70,49 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/module/**");
 
         // the bouncer redirect is available for every request except modules and /login
-//        registry.addInterceptor(bouncerInterceptor)
-//                .addPathPatterns("/**")
-//                .excludePathPatterns("/")
-//                .excludePathPatterns("/module/**")
-//                .excludePathPatterns("/login");
+        registry.addInterceptor(bouncerInterceptor)
+                .addPathPatterns("/**");
+    }
+
+    @Bean(name = "freemarkerViewResolver")
+    public FreeMarkerViewResolver viewResolver() {
+        FreeMarkerViewResolver viewResolver = new FreeMarkerViewResolver();
+        viewResolver.setExposeSpringMacroHelpers(true);
+        viewResolver.setExposeRequestAttributes(true);
+        viewResolver.setPrefix("");
+        viewResolver.setSuffix(".ftl");
+        viewResolver.setContentType("text/html;charset=UTF-8");
+        return viewResolver;
     }
 
     @Bean
     public FreeMarkerConfigurer freemarkerConfig() throws IOException, TemplateException {
         FreeMarkerConfigurationFactory factory = new FreeMarkerConfigurationFactory();
-        factory.setTemplateLoaderPaths("classpath:templates", "classpath:modules");
+        factory.setTemplateLoaderPaths("classpath:templates", "classpath:modules", "classpath:org/springframework/web/servlet/view/freemarker");
         factory.setDefaultEncoding("UTF-8");
         FreeMarkerConfigurer result = new FreeMarkerConfigurer();
-        result.setConfiguration(factory.createConfiguration());
+        Configuration configuration = factory.createConfiguration();
+        configuration.addAutoImport("spring", "/spring.ftl");
+        configuration.addAutoInclude("macros/global.ftl");
+        result.setConfiguration(configuration);
         return result;
+    }
+
+    @Bean
+    public CacheManager cacheManager() {
+        SimpleCacheManager cacheManager = new SimpleCacheManager();
+
+        // TODO: Move some of this settings to configuration
+        GuavaCache amsClientRequestContextCache = new GuavaCache(ConfigureAmsClientRequestContext.AMS_USER_REQUEST_CONTEXT_CACHE,
+                CacheBuilder.newBuilder()
+                .expireAfterWrite(3600, TimeUnit.SECONDS)
+                .maximumSize(10000)
+                .build());
+
+        cacheManager.setCaches(Arrays.asList(
+                amsClientRequestContextCache));
+
+        return cacheManager;
     }
 }
 

@@ -1,5 +1,4 @@
 <ul class="footer nav navbar-nav">
-    <li class="active"><a href="#">Home</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="/about">About</a></li>
+    <li><a href="https://github.com/mindera/autism" target="_blank">Contribute</a></li>
 </ul>
