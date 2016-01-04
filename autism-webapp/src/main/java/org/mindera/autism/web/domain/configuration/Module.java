@@ -1,8 +1,11 @@
 package org.mindera.autism.web.domain.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Map;
 
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Module {
 
     private String module;

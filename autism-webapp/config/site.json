@@ -18,12 +18,18 @@
     "welcome": {
       "url": "/module/welcome"
     },
+    "registration": {
+      "url": "/module/registration"
+    },
+    "patient": {
+      "url": "/module/patient"
+    },
     "slowdown": {
       "url": "/module/slowdown"
     }
   },
   "pages": {
-    "homepage": {
+    "base": {
       "layout": "layout/default.ftl",
       "modules": {
         "header": [
@@ -37,16 +43,8 @@
             "module": "user"
           }
         ],
-        "aside": [
-          {
-            "module": "help"
-          }
-        ],
-        "main": [
-          {
-            "module": "welcome"
-          }
-        ],
+        "main": [],
+        "aside": [],
         "footer": [
           {
             "module": "credits"
@@ -60,12 +58,67 @@
         ]
       }
     },
+    "homepage": {
+      "parent": "base",
+      "layout": "layout/homepage.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "welcome"
+          }
+        ],
+        "col1": [
+          {
+            "module": "help"
+          }
+        ],
+        "col2": [
+          {
+            "module": "help"
+          }
+        ]
+      }
+    },
     "login": {
-      "layout": "layout/login.ftl",
+      "parent": "base",
       "modules": {
         "main": [
           {
             "module": "login"
+          }
+        ],
+        "aside": [
+          {
+            "module": "help"
+          }
+        ]
+      }
+    },
+    "registration": {
+      "parent": "base",
+      "modules": {
+        "main": [
+          {
+            "module": "registration"
+          }
+        ],
+        "aside": [
+          {
+            "module": "help"
+          }
+        ]
+      }
+    },
+    "create-patient": {
+      "parent": "base",
+      "layout": "layout/wide.ftl",
+      "modules": {
+        "main": [
+          {
+            "module": "patient",
+            "params": {
+              "action": "create"
+            }
           }
         ]
       }
@@ -90,6 +143,12 @@
     },
     "/login": {
       "page": "login"
+    },
+    "/registration": {
+      "page": "registration"
+    },
+    "/create-patient": {
+      "page": "create-patient"
     },
     "/slowdown": {
       "page": "slowdown"

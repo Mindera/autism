@@ -8,4 +8,6 @@ public final class ModuleUrlMapping {
     public static final String MODULE_NAVIGATION = "/module/navigation";
     public static final String MODULE_USER = "/module/user";
     public static final String MODULE_WELCOME = "/module/welcome";
+    public static final String MODULE_REGISTRATION = "/module/registration";
+    public static final String MODULE_PATIENT = "/module/patient";
 }

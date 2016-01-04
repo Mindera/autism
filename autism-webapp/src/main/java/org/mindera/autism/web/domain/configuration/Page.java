@@ -1,16 +1,17 @@
 package org.mindera.autism.web.domain.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by fonsecaj on 22/11/15.
- */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Page {
 
     private String page;
     private String layout;
     private Map<String, List<Module>> modules;
+    private String parent;
 
     public String getPage() {
         return page;
@@ -34,5 +35,14 @@ public class Page {
 
     public void setModules(Map<String, List<Module>> modules) {
         this.modules = modules;
+    }
+
+
+    public String getParent() {
+        return parent;
+    }
+
+    public void setParent(String parent) {
+        this.parent = parent;
     }
 }

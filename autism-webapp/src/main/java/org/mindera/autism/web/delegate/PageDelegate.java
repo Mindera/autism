@@ -1,12 +1,14 @@
 package org.mindera.autism.web.delegate;
 
-import com.google.common.annotations.VisibleForTesting;
 import com.google.common.base.Joiner;
+import com.google.common.util.concurrent.*;
 import org.mindera.autism.web.context.AutismRequestContext;
 import org.mindera.autism.web.domain.ModuleResponse;
 import org.mindera.autism.web.domain.configuration.Module;
 import org.mindera.autism.web.domain.configuration.ModuleLocationType;
 import org.mindera.autism.web.domain.configuration.Page;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.task.AsyncListenableTaskExecutor;
 import org.springframework.http.HttpEntity;
@@ -14,20 +16,24 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.web.client.AsyncRestTemplate;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
+import java.util.concurrent.Callable;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.Objects.isNull;
+import static java.util.Objects.nonNull;
 
 @Component
 public class PageDelegate {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PageDelegate.class);
 
     @Resource
     FreeMarkerConfigurer freeMarkerConfigurer;
@@ -48,7 +54,9 @@ public class PageDelegate {
     @Resource
     AsyncListenableTaskExecutor taskExecutor;
 
-    public Map<String, List<ModuleResponse>> process(HttpServletRequest request) throws IOException, InterruptedException {
+    public Map<String, List<ModuleResponse>> process(HttpServletRequest request, String body) throws IOException,
+            InterruptedException {
+        Long now = System.currentTimeMillis();
         Map<String, List<ModuleResponse>> model = new HashMap<>();
         Map<ModuleResponse, Integer> tempModuleResponses = new HashMap<>();
         List<ModuleResponse> moduleResponses = new ArrayList<>();
@@ -57,14 +65,19 @@ public class PageDelegate {
 
         // prepare the HttpEntity to send to each module
         HttpMethod method = HttpMethod.valueOf(request.getMethod());
-        HttpEntity requestEntity = getHttpEntity(request);
+        HttpEntity requestEntity = getHttpEntity(request, body);
 
-        // create all the futures
+        // create all the module responses with the various callables to
+        // be submitted to the task executor
         page.getModules().forEach(
                 (layoutSection, modules) -> {
                     model.put(layoutSection, new ArrayList<>());
                     modules.stream().forEach(module -> {
-                        ModuleResponse m = getModuleResponse(method, requestEntity, module);
+                        ModuleResponse m = new ModuleResponse();
+                        m.setStatus(ModuleResponse.Status.LOADING);
+                        m.setModule(module);
+                        m.setResponse("");
+                        m.setCallable(getModuleCallable(method, request.getQueryString(), requestEntity, module));
                         model.get(layoutSection).add(m);
                         tempModuleResponses.put(m, 1);
                     });
@@ -72,61 +85,69 @@ public class PageDelegate {
         );
         moduleResponses.addAll(tempModuleResponses.keySet());
 
-        int time = 0;
-        boolean done = false;
+        // submit all callables to the task executor and collect the futures in a list
+        ListeningExecutorService executor = MoreExecutors.listeningDecorator(Executors.newScheduledThreadPool(moduleResponses.size() + 1));
 
-        // wait for a certain time for all futures to complete.
-        // cancel any future that does not complete within the correct time
-        // TODO: Replace this with a proper implementation (Maybe using an ExecutorService)
-        while (time < maxExecutionTime && !done) {
-            Thread.sleep(executionIncrement);
-            time += executionIncrement;
+        moduleResponses.stream().forEach(mr -> {
+            ListenableFuture<ResponseEntity<String>> future = executor.submit(mr.getCallable());
+            Futures.addCallback(future, new FutureCallback<ResponseEntity<String>>() {
+                @Override
+                public void onSuccess(ResponseEntity<String> result) {
+                    mr.setStatus(ModuleResponse.Status.SUCCESS);
+                    mr.setResponseHeaders(result.getHeaders());
+                    mr.setResponse(result.getBody());
+                }
 
-            moduleResponses = moduleResponses.stream().filter(mr -> mr.getResponse() == null).collect(Collectors.toList());
+                @Override
+                public void onFailure(Throwable thrown) {
+                    LOGGER.error("Failure to load module [" + mr.getModule().getModule() + "] on URL [" + mr.getModule().getUrl() + "]: " + thrown.getMessage());
+                    mr.setStatus(ModuleResponse.Status.FAILED);
+                }
+            });
+        });
 
-            if (moduleResponses.isEmpty()) {
-                done = true;
-            } else if (time >= maxExecutionTime) {
-                moduleResponses.forEach(mr -> {
-                    mr.getFuture().cancel(true);
-                    mr.setStatus(ModuleResponse.Status.FAILURE_TO_LOAD);
-                });
-            }
-        }
+        // stops the executor services and waits for all tasks to finish or for the global timeout to be reached
+        executor.shutdown();
+        executor.awaitTermination(maxExecutionTime, TimeUnit.MILLISECONDS);
+
+
+        LOGGER.info("Page processing milliseconds: " + (System.currentTimeMillis() - now));
 
         return model;
     }
 
-    private ModuleResponse getModuleResponse(HttpMethod method, HttpEntity requestEntity, Module module) {
-        AsyncRestTemplate asycTemp = new AsyncRestTemplate(taskExecutor);
-        String url = module.getUrl();
+    private Callable<ResponseEntity<String>> getModuleCallable(HttpMethod method, String queryString, HttpEntity requestEntity, Module module) {
+        Callable<ResponseEntity<String>> callable = () -> {
+            RestTemplate rest = new RestTemplate();
+            String url = module.getUrl();
 
-        if (module.getLocationType() == ModuleLocationType.LOCAL) {
-            url = "http://localhost:" + port + module.getUrl();
-        }
-        Class<String> responseType = String.class;
+            if (module.getLocationType() == ModuleLocationType.LOCAL) {
+                url = "http://localhost:" + port + module.getUrl();
+            }
+            Class<String> responseType = String.class;
 
-        if (module.getParams() != null) {
-            url = url.concat("?").concat(Joiner.on("&").withKeyValueSeparator("=").join(module.getParams()));
-        }
-
-        ListenableFuture<ResponseEntity<String>> future = asycTemp.exchange(url, method, requestEntity, responseType);
-        ModuleResponse m = new ModuleResponse();
-        m.setModule(module);
-        m.setFuture(future);
-        future.addCallback(new ListenableFutureCallback<ResponseEntity<String>>() {
-            @Override
-            public void onFailure(Throwable throwable) {
-                m.setStatus(ModuleResponse.Status.FAILURE_TO_LOAD);
+            if (isNull(module.getParams())) {
+                module.setParams(new HashMap<>());
             }
 
-            @Override
-            public void onSuccess(ResponseEntity<String> stringResponseEntity) {
-                m.setResponse(stringResponseEntity.getBody());
-                m.setStatus(ModuleResponse.Status.SUCCESS);
+            if (nonNull(module.getParams())) {
+                // pass module specific parameters
+                url = url.concat("?").concat(Joiner.on("&").withKeyValueSeparator("=").join(module.getParams()));
             }
-        });
-        return m;
+
+            // I'm sure there is a freaking better way of doing this
+            if (nonNull(queryString)) {
+                if (url.contains("?")) {
+                    url = url.concat("&").concat(queryString);
+                } else {
+                    url = url.concat("?").concat(queryString);
+                }
+            }
+
+            ResponseEntity<String> response = rest.exchange(url, method, requestEntity, responseType);
+            return response;
+        };
+        return callable;
     }
 
     /**
@@ -136,15 +157,10 @@ public class PageDelegate {
      * @return
      * @throws IOException
      */
-    private HttpEntity getHttpEntity(HttpServletRequest request) throws IOException {
+    private HttpEntity getHttpEntity(HttpServletRequest request, String body) throws IOException {
         HttpHeaders headers = new HttpHeaders();
         Collections.list(request.getHeaderNames()).forEach(h -> headers.add(h, request.getHeader(h)));
-        StringBuffer body = new StringBuffer();
-        String line;
-        BufferedReader reader = request.getReader();
-        while ((line = reader.readLine()) != null) {
-            body.append(line);
-        }
+
         return new HttpEntity(body, headers);
     }
 }

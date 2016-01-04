@@ -3,10 +3,10 @@
   <groupId>mindera</groupId>
   <artifactId>ams-client</artifactId>
   <versioning>
-    <release>1.1.3</release>
+    <release>1.2.3</release>
     <versions>
-      <version>1.1.3</version>
+      <version>1.2.3</version>
     </versions>
-    <lastUpdated>20151121193438</lastUpdated>
+    <lastUpdated>20151222173414</lastUpdated>
   </versioning>
 </metadata>

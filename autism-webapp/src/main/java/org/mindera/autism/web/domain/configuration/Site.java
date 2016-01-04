@@ -1,7 +1,10 @@
 package org.mindera.autism.web.domain.configuration;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.util.Map;
 
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class Site {
     private Page defaultPage;
     private Map<String, Page> pages;

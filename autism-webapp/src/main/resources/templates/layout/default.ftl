@@ -1,13 +1,4 @@
-<#include "../macros/global.ftl">
 <#include "common_header.ftl"/>
-
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-        <@layoutSection header />
-        </div>
-    </div>
-</nav>
 
 <div class="container">
     <div class="row">

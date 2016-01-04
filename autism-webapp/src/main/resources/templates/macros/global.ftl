@@ -3,8 +3,10 @@
         <#list section as module>
             <#if module??>
                 <module class="${module.module.module}">
-                <#if  module.status?? && module.status != "FAILURE_TO_LOAD">
-                ${module.response}
+                <#if  module.status?? && module.status == "SUCCESS">
+                    ${module.response}
+                <#else>
+                    Failure to load module: ${module.module.module}
                 </#if>
                 </module>
             </#if>
