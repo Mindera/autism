@@ -1,13 +1,38 @@
 package org.mindera.autism.web.domain;
 
 import org.mindera.autism.web.domain.configuration.Module;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.concurrent.ListenableFuture;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.Future;
 
 
 public class ModuleResponse {
 
+    private ListenableFuture<ResponseEntity<String>> future;
+
+    public void setFuture(ListenableFuture<ResponseEntity<String>> future) {
+        this.future = future;
+    }
+
+    public ListenableFuture<ResponseEntity<String>> getFuture() {
+        return future;
+    }
+
+    public enum Status {
+        LOADING,
+        CANCELLED,
+        FAILED,
+        SUCCESS
+    }
+
     private Status status;
+    private HttpHeaders responseHeaders;
+    private Module module;
+    private Callable<ResponseEntity<String>> callable;
+    private String response;
 
     public void setStatus(Status status) {
         this.status = status;
@@ -17,15 +42,13 @@ public class ModuleResponse {
         return status;
     }
 
-    public enum Status {
-        FAILURE_TO_LOAD,
-        SUCCESS
-    };
+    public void setResponseHeaders(HttpHeaders responseHeaders) {
+        this.responseHeaders = responseHeaders;
+    }
 
-
-    private Module module;
-    private ListenableFuture<ResponseEntity<String>> future;
-    private String response;
+    public HttpHeaders getResponseHeaders() {
+        return responseHeaders;
+    }
 
     public Module getModule() {
         return module;
@@ -35,12 +58,12 @@ public class ModuleResponse {
         this.module = module;
     }
 
-    public ListenableFuture<ResponseEntity<String>> getFuture() {
-        return future;
+    public Callable<ResponseEntity<String>> getCallable() {
+        return callable;
     }
 
-    public void setFuture(ListenableFuture<ResponseEntity<String>> future) {
-        this.future = future;
+    public void setCallable(Callable<ResponseEntity<String>> callable) {
+        this.callable = callable;
     }
 
     public void setResponse(String response) {

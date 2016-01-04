@@ -32,11 +32,11 @@
         <spring-boot-starter-jsondoc.version>1.1.13</spring-boot-starter-jsondoc.version>
         <jacoco-maven-plugin.version>0.7.4.201502262128</jacoco-maven-plugin.version>
         <maven-release-plugin.version>2.5.1</maven-release-plugin.version>
-        <udb-client.version>1.1.0</udb-client.version>
-        <udb-domain.version>1.1.0</udb-domain.version>
+        <udb-client.version>1.2.0</udb-client.version>
+        <udb-domain.version>1.2.0</udb-domain.version>
         <spring-boot-microservice-core.version>1.0.9</spring-boot-microservice-core.version>
-        <ams-domain.version>1.2.1</ams-domain.version>
-        <ams-client.version>1.2.1</ams-client.version>
+        <ams-domain.version>1.2.3</ams-domain.version>
+        <ams-client.version>1.2.3</ams-client.version>
         <jsoup.version>1.7.2</jsoup.version>
         <selenium-java.version>2.48.2</selenium-java.version>
         <selenium-htmlunit-driver.version>2.48.2</selenium-htmlunit-driver.version>

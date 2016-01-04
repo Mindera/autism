@@ -1,6 +1,7 @@
 package org.mindera.autism.web.context;
 
 
+import com.mindera.ams.domain.User;
 import com.mindera.microservice.context.RequestContext;
 import com.mindera.microservice.security.domain.Role;
 import org.mindera.autism.web.domain.configuration.Page;
@@ -18,6 +19,7 @@ public class AutismRequestContext implements RequestContext {
     private List<Role> roles;
     private Site siteConfiguration;
     private Page currentPage;
+    private User user;
 
     @Override
     public List<Role> getRoles() {
@@ -43,5 +45,14 @@ public class AutismRequestContext implements RequestContext {
 
     public Page getCurrentPage() {
         return currentPage;
+    }
+
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

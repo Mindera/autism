@@ -4,12 +4,12 @@
 
     <groupId>mindera</groupId>
     <artifactId>ams-domain</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.3</version>
 
 
     <parent>
         <groupId>mindera</groupId>
-        <version>1.2.1</version>
+        <version>1.2.3</version>
         <artifactId>ams</artifactId>
     </parent>
 
@@ -17,6 +17,10 @@
         <dependency>
             <groupId>mindera</groupId>
             <artifactId>spring-boot-microservice-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>mindera</groupId>
+            <artifactId>udb-client</artifactId>
         </dependency>
     </dependencies>
 

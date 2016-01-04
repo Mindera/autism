@@ -1,6 +1,7 @@
 package org.mindera.autism.web;
 
 import com.google.common.cache.CacheBuilder;
+import com.mindera.ams.interceptor.CacheableUserSessionProvider;
 import com.mindera.ams.interceptor.ConfigureAmsClientRequestContext;
 import freemarker.template.Configuration;
 import freemarker.template.TemplateException;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.guava.GuavaCache;
 import org.springframework.cache.support.SimpleCacheManager;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 @EnableAsync
 @EnableAutoConfiguration
 @EnableTransactionManagement
+@EnableCaching
 @ComponentScan(basePackages = {"org.mindera", "com.mindera"})
 public class Bootstrap extends WebMvcConfigurerAdapter {
 
@@ -42,7 +45,7 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
     ConfigurationInterceptor configurationInterceptor;
 
     @Resource
-    RequestContextInterceptor bouncerInterceptor;
+    RequestContextInterceptor requestContextInterceptor;
 
     @Value("${module.request.pool.size}")
     private Integer batchMaxPoolSize;
@@ -70,7 +73,7 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
                 .excludePathPatterns("/module/**");
 
         // the bouncer redirect is available for every request except modules and /login
-        registry.addInterceptor(bouncerInterceptor)
+        registry.addInterceptor(requestContextInterceptor)
                 .addPathPatterns("/**");
     }
 
@@ -103,7 +106,7 @@ public class Bootstrap extends WebMvcConfigurerAdapter {
         SimpleCacheManager cacheManager = new SimpleCacheManager();
 
         // TODO: Move some of this settings to configuration
-        GuavaCache amsClientRequestContextCache = new GuavaCache(ConfigureAmsClientRequestContext.AMS_USER_REQUEST_CONTEXT_CACHE,
+        GuavaCache amsClientRequestContextCache = new GuavaCache(CacheableUserSessionProvider.AMS_USER_REQUEST_CONTEXT_CACHE,
                 CacheBuilder.newBuilder()
                 .expireAfterWrite(3600, TimeUnit.SECONDS)
                 .maximumSize(10000)

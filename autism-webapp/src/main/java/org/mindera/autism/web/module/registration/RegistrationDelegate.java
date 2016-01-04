@@ -1,9 +1,11 @@
 package org.mindera.autism.web.module.registration;
 
 import com.mindera.udb.client.UdbClient;
-import com.mindera.udb.domain.*;
+import com.mindera.udb.domain.Credentials;
+import com.mindera.udb.domain.Details;
+import com.mindera.udb.domain.Status;
+import com.mindera.udb.domain.User;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpClientErrorException;
 
 import javax.annotation.Resource;
 
@@ -11,6 +13,7 @@ import javax.annotation.Resource;
 public class RegistrationDelegate {
 
     public static final String USER_CREATED = "USER_CREATED";
+
     @Resource
     UdbClient udbClient;
 

@@ -60,37 +60,51 @@
     },
     "homepage": {
       "parent": "base",
+      "layout": "layout/homepage.ftl",
       "modules": {
-        "aside": [
+        "main": [
+          {
+            "module": "welcome"
+          }
+        ],
+        "col1": [
           {
             "module": "help"
           }
         ],
-        "main": [
+        "col2": [
           {
-            "module": "welcome"
+            "module": "help"
           }
         ]
       }
     },
     "login": {
       "parent": "base",
-      "layout": "layout/wide.ftl",
       "modules": {
         "main": [
           {
             "module": "login"
+          }
+        ],
+        "aside": [
+          {
+            "module": "help"
           }
         ]
       }
     },
     "registration": {
       "parent": "base",
-      "layout": "layout/wide.ftl",
       "modules": {
         "main": [
           {
             "module": "registration"
+          }
+        ],
+        "aside": [
+          {
+            "module": "help"
           }
         ]
       }

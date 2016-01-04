@@ -1,24 +1,42 @@
-<div class="loginform">
-    <#if parameterMap.failure??>
-        <div class="alert alert-danger">
-            Failed to login with credentials provided.
-        </div>
-    </#if>
-    <form class="form-signin" action="/module/login" method="POST">
+<h3>
+    Please in with your credentials
+</h3>
+
+<#if parameterMap.failure??>
+<div class="alert alert-danger">
+    Failed to login with credentials provided.
+</div>
+</#if>
+
+<div class="well loginform">
+
+    <form class="form-horizontal" action="/module/login" method="POST">
         <input type="hidden" name="successUrl" value="/" />
         <input type="hidden" name="failureUrl" value="/login?failure=true" />
         <input type="hidden" name="accountUrl" value="/create-patient" />
-        <h2 class="form-signin-heading">Please sign in</h2>
-        <label for="inputEmail" class="sr-only">Email address</label>
-        <input type="email" name="email" class="form-control" placeholder="Email address" required autofocus>
-        <label for="inputPassword" class="sr-only">Password</label>
-        <input type="password" name="password" class="form-control" placeholder="Password" required>
-
-        <div class="checkbox">
-            <label>
-                <input type="checkbox" value="remember-me"> Remember me
-            </label>
-        </div>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        <fieldset>
+            <div class="form-group">
+                <label for="inputEmail" class="col-lg-2 control-label">Email</label>
+                <div class="col-lg-10">
+                    <input type="text" class="form-control" id="inputEmail" name="email" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="col-lg-2 control-label">Password</label>
+                <div class="col-lg-10">
+                    <input type="password" class="form-control" id="inputPassword" name="password" placeholder="Password">
+                    <div class="checkbox">
+                        <label>
+                            <input type="checkbox"> Remember me
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-lg-10 col-lg-offset-2">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </div>
+        </fieldset>
     </form>
 </div>

@@ -1,13 +1,5 @@
 <#include "common_header.ftl"/>
 
-<nav class="navbar navbar-default">
-    <div class="container">
-        <div class="navbar-header">
-        <@layoutSection header />
-        </div>
-    </div>
-</nav>
-
 <div class="container">
     <div class="row">
         <div class="col-xs-12 col-md-8"><@layoutSection main /></div>

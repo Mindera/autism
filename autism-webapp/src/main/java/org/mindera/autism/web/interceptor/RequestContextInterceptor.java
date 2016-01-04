@@ -26,8 +26,6 @@ public class RequestContextInterceptor implements HandlerInterceptor {
     @Resource
     AutismRequestContext requestContext;
 
-    @Resource
-    private ServletContext context;
 
 
     @Override
@@ -42,6 +40,8 @@ public class RequestContextInterceptor implements HandlerInterceptor {
 
         if (nonNull(amsContext.getUser())) {
             requestContext.getRoles().add(Role.AUTHENTICATED);
+            requestContext.setUser(amsContext.getUser());
+            // TODO add other relevant stuff to the request context
         }
 
         return true;
